@@ -11,6 +11,12 @@ public class LuaFunctionBuilder
         Function = new LuaFunction("");
     }
     
+    public LuaFunctionBuilder Local()
+    {
+        Function.IsLocal = true;
+        return this;
+    }
+    
     public LuaFunctionBuilder Name(string name)
     {
         Function.Name = name;
