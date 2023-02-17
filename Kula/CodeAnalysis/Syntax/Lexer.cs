@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Kula.CodeAnalysis.Exceptions;
 using Kula.CodeAnalysis.Source;
 
 namespace Kula.CodeAnalysis.Syntax;
@@ -56,9 +57,17 @@ public sealed class Lexer
             {
                 if (!specification.IsMatch(_context))
                     continue;
-                
-                var (text, span, value) = specification.Transform(_context);
-                tokens.Add(new SyntaxToken(GetLocation(span), kind, text, value));
+
+                try
+                {
+                    var (text, span, value) = specification.Transform(_context);
+                    tokens.Add(new SyntaxToken(GetLocation(span), kind, text, value));
+                }
+                catch (BadLexException ex)
+                {
+                    var (text, span, value) = ex.Result;
+                    tokens.Add(new SyntaxToken(GetLocation(span), SyntaxTokenKind.BadToken, text, value));
+                }
                 
                 found = true;
                 break;
