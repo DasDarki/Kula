@@ -1,4 +1,5 @@
-﻿using Kula.CodeAnalysis.Source;
+﻿using System.Text;
+using Kula.CodeAnalysis.Source;
 
 namespace Kula.CodeAnalysis.Syntax;
 
@@ -33,5 +34,34 @@ public sealed class SyntaxToken
         Kind = kind;
         Text = text;
         Value = value;
+    }
+
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        builder.Append(Location);
+        builder.Append(' ');
+        builder.Append(Enum.GetName(Kind));
+
+        if (Kind != SyntaxTokenKind.EndOfFileToken)
+        {
+            builder.Append(':');
+            builder.Append(' ');
+        }
+        
+        if (Value != null)
+        {
+            builder.Append(Value);
+            builder.Append(' ');
+            builder.Append('[');
+            builder.Append(Value.GetType().Name);
+            builder.Append(']');
+        }
+        else
+        {
+            builder.Append(Text);
+        }
+        
+        return builder.ToString();
     }
 }

@@ -49,12 +49,6 @@ public sealed class Lexer
                     _line++;
                     continue;
             }
-
-            if (char.IsWhiteSpace(_context.Current))
-            {
-                _context.NextToken();
-                continue;
-            }
             
             var found = false;
             
@@ -72,6 +66,12 @@ public sealed class Lexer
             
             if (found)
                 continue;
+
+            if (char.IsWhiteSpace(_context.Current))
+            {
+                _context.NextToken();
+                continue;
+            }
             
             tokens.Add(new SyntaxToken(GetLocation(new SourceSpan(_context.SourcePosition, 1)), SyntaxTokenKind.BadToken, _context.Read().ToString()));
         }

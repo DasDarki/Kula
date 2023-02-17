@@ -16,11 +16,24 @@ public enum SyntaxTokenKind
     [TokenSpecification]
     EndOfFileToken,
     
-    // Misc
+    // Literals
     
     [TokenSpecification(typeof(NumberTokenSpecifier))]
     NumberToken,
     
+    [TokenSpecification(typeof(StringTokenSpecifier))]
+    StringToken,
+    
+    // Keywords
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "function")]
+    FunctionToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "end")]
+    EndToken,
+    
+    // Misc
+
     [TokenSpecification(typeof(CharTokenSpecifier), '+')]
     PlusToken,
     
@@ -47,4 +60,12 @@ public enum SyntaxTokenKind
     
     [TokenSpecification(typeof(CharTokenSpecifier), ')')]
     CloseParenthesisToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), ':')]
+    ColonToken,
+    
+    // Identifiers
+    
+    [TokenSpecification(typeof(IdentifierTokenSpecifier))]
+    IdentifierToken,
 }

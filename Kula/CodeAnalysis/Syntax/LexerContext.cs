@@ -20,22 +20,63 @@ internal sealed class LexerContext
         Text = text;
     }
     
-    public char Peek(int offset)
+    public char Peek(int offset, bool skipWhitespace = false)
     {
         var index = Position + offset;
-        return index >= Text.Length ? '\0' : Text[index];
-    }
+        if (index >= Text.Length)
+            return '\0';
+        
+        var c = Text[index];
+        if (!skipWhitespace) 
+            return c;
+        
+        while (char.IsWhiteSpace(c))
+        {
+            index++;
+            if (index >= Text.Length)
+                return '\0';
+            c = Text[index];
+        }
 
-    public void NextToken()
+        return c;
+    }
+    
+    public char PeekWithIndex(int offset, out int index, bool skipWhitespace = false)
     {
-        Position++;
-        SourcePosition++;
+        index = Position + offset;
+        if (index >= Text.Length)
+            return '\0';
+        
+        var c = Text[index];
+        if (!skipWhitespace) 
+            return c;
+        
+        while (char.IsWhiteSpace(c))
+        {
+            index++;
+            if (index >= Text.Length)
+                return '\0';
+            c = Text[index];
+        }
+
+        return c;
     }
 
-    public void Jump(int offset)
+    public void NextToken(bool skipWhitespace = false) => Jump(1, skipWhitespace);
+
+    public void Jump(int offset, bool skipWhitespace = false)
     {
         Position += offset;
         SourcePosition += offset;
+        
+        if (!skipWhitespace) 
+            return;
+
+        while (char.IsWhiteSpace(Current))
+        {
+            Position++;
+            SourcePosition++;
+        }
     }
     
     public void NewLine()
@@ -43,10 +84,10 @@ internal sealed class LexerContext
         SourcePosition = 0;
     }
     
-    public char Read()
+    public char Read(bool skipWhitespace = false)
     {
         var current = Current;
-        NextToken();
+        NextToken(skipWhitespace);
         return current;
     }
 }

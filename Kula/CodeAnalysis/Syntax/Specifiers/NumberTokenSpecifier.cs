@@ -8,11 +8,11 @@ internal sealed class NumberTokenSpecifier : ITokenSpecifier
 {
     public bool IsMatch(LexerContext context) =>
         char.IsDigit(context.Current)
-        || context.Current == '-' && char.IsDigit(context.Peek(1))
-        || context.Current == '+' && char.IsDigit(context.Peek(1))
-        || context.Current == '.' && char.IsDigit(context.Peek(1))
-        || context.Current == '-' && context.Peek(1) == '.' && char.IsDigit(context.Peek(2))
-        || context.Current == '+' && context.Peek(1) == '.' && char.IsDigit(context.Peek(2));
+        || context.Current == '-' && char.IsDigit(context.Peek(1, true))
+        || context.Current == '+' && char.IsDigit(context.Peek(1, true))
+        || context.Current == '.' && char.IsDigit(context.Peek(1, true))
+        || context.Current == '-' && context.PeekWithIndex(1, out var index1, true) == '.' && char.IsDigit(context.Peek(index1 + 1))
+        || context.Current == '+' && context.PeekWithIndex(1, out var index2, true) == '.' && char.IsDigit(context.Peek(index2 + 1));
 
     public SpecificationResult Transform(LexerContext context)
     {
@@ -27,7 +27,7 @@ internal sealed class NumberTokenSpecifier : ITokenSpecifier
         var sb = new StringBuilder();
         
         if (context.Current is '-' or '+')
-            sb.Append(context.Read());
+            sb.Append(context.Read(true));
         
         while (char.IsDigit(context.Current))
             sb.Append(context.Read());

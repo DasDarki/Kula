@@ -1,4 +1,6 @@
-﻿namespace Kula.CodeAnalysis.Source;
+﻿using System.Text;
+
+namespace Kula.CodeAnalysis.Source;
 
 /// <summary>
 /// The source location defines the location of a token in the source code.
@@ -25,5 +27,26 @@ public sealed class SourceLocation
         Line = line;
         Column = column;
         File = file;
+    }
+
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        builder.Append('(');
+
+        if (File != null)
+        {
+            builder.Append(File);
+            builder.Append(' ');
+            builder.Append('@');
+            builder.Append(' ');
+        }
+
+        builder.Append(Line);
+        builder.Append(':');
+        builder.Append(Column);
+        builder.Append(')');
+        
+        return builder.ToString();
     }
 }
