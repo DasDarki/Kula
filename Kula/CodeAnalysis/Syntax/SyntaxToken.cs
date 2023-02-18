@@ -6,17 +6,11 @@ namespace Kula.CodeAnalysis.Syntax;
 /// <summary>
 /// The syntax token is a token in the syntax tree.
 /// </summary>
-internal sealed class SyntaxToken
+public sealed class SyntaxToken : SyntaxNode
 {
-    /// <summary>
-    /// The location of the token in the original source code.
-    /// </summary>
-    public SourceLocation Location { get; }
+    public override SyntaxNodeCategory Category => SyntaxNodeCategory.Token;
     
-    /// <summary>
-    /// The type of the syntax token.
-    /// </summary>
-    public SyntaxTokenKind Kind { get; }
+    public override SyntaxKind Kind { get; }
     
     /// <summary>
     /// The raw text of the token.
@@ -28,9 +22,8 @@ internal sealed class SyntaxToken
     /// </summary>
     public object? Value { get; }
 
-    internal SyntaxToken(SourceLocation location, SyntaxTokenKind kind, string text, object? value = null)
+    public SyntaxToken(SourceLocation location, SyntaxKind kind, string text, object? value = null) : base(location)
     {
-        Location = location;
         Kind = kind;
         Text = text;
         Value = value;
@@ -43,7 +36,7 @@ internal sealed class SyntaxToken
         builder.Append(' ');
         builder.Append(Enum.GetName(Kind));
 
-        if (Kind != SyntaxTokenKind.EndOfFileToken)
+        if (Kind != SyntaxKind.EndOfFileToken)
         {
             builder.Append(':');
             builder.Append(' ');

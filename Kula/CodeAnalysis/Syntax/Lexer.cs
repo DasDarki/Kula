@@ -9,7 +9,7 @@ namespace Kula.CodeAnalysis.Syntax;
 /// </summary>
 internal sealed class Lexer
 {
-    private readonly Dictionary<SyntaxTokenKind, TokenSpecification> _tokenSpecifications = new();
+    private readonly Dictionary<SyntaxKind, TokenSpecification> _tokenSpecifications = new();
     private readonly LexerContext _context;
     private readonly string? _file;
     private int _line = 1;
@@ -19,12 +19,12 @@ internal sealed class Lexer
         _file = file;
         _context = new LexerContext(text);
         
-        foreach (var value in Enum.GetValues(typeof(SyntaxTokenKind)))
+        foreach (var value in Enum.GetValues(typeof(SyntaxKind)))
         {
-            if (value is not SyntaxTokenKind kind)
+            if (value is not SyntaxKind kind)
                 continue;
             
-            var attribute = typeof(SyntaxTokenKind).GetField(kind.ToString())?.GetCustomAttribute<TokenSpecification>();
+            var attribute = typeof(SyntaxKind).GetField(kind.ToString())?.GetCustomAttribute<TokenSpecification>();
             
             if (attribute == null)
                 continue;
@@ -66,7 +66,7 @@ internal sealed class Lexer
                 catch (BadLexException ex)
                 {
                     var (text, span, value) = ex.Result;
-                    tokens.Add(new SyntaxToken(GetLocation(span), SyntaxTokenKind.BadToken, text, value));
+                    tokens.Add(new SyntaxToken(GetLocation(span), SyntaxKind.BadToken, text, value));
                 }
                 
                 found = true;
@@ -82,10 +82,10 @@ internal sealed class Lexer
                 continue;
             }
             
-            tokens.Add(new SyntaxToken(GetLocation(new SourceSpan(_context.SourcePosition, 1)), SyntaxTokenKind.BadToken, _context.Read().ToString()));
+            tokens.Add(new SyntaxToken(GetLocation(new SourceSpan(_context.SourcePosition, 1)), SyntaxKind.BadToken, _context.Read().ToString()));
         }
         
-        tokens.Add(new SyntaxToken(GetLocation(new SourceSpan(_context.SourcePosition, 0)), SyntaxTokenKind.EndOfFileToken, string.Empty));
+        tokens.Add(new SyntaxToken(GetLocation(new SourceSpan(_context.SourcePosition, 0)), SyntaxKind.EndOfFileToken, string.Empty));
         
         return tokens;
     }

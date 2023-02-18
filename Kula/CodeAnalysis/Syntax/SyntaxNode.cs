@@ -27,7 +27,7 @@ public abstract class SyntaxNode : IEnumerable<SyntaxNode>
     /// <summary>
     /// The kind of this syntax node.
     /// </summary>
-    public abstract SyntaxNodeKind Kind { get; }
+    public abstract SyntaxKind Kind { get; }
 
     protected SyntaxNode(SourceLocation location, SyntaxNode? parent = null)
     {

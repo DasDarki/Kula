@@ -7,17 +7,17 @@ namespace Kula.CodeAnalysis.Syntax.Nodes;
 /// </summary>
 public sealed class FunctionDeclarationNode : DeclarationNode
 {
-    public override SyntaxNodeKind Kind => SyntaxNodeKind.FunctionDeclaration;
+    public override SyntaxKind Kind => SyntaxKind.FunctionDeclaration;
     
     /// <summary>
     /// The name of the function. If empty, the function is anonymous.
     /// </summary>
-    public SyntaxNode Name { get; set; }
+    public SyntaxToken Name { get; set; }
     
     /// <summary>
-    /// The return type of the function. If empty, the function returns void.
+    /// The return type of the function. If null, the function returns void.
     /// </summary>
-    public string ReturnType { get; set; }
+    public SyntaxToken? ReturnType { get; set; }
     
     /// <summary>
     /// A list of parameters the function takes.
@@ -27,9 +27,9 @@ public sealed class FunctionDeclarationNode : DeclarationNode
     /// <summary>
     /// Whether the function is anonymous. Uses <see cref="Name"/> to determine this.
     /// </summary>
-    public bool IsAnonymous => string.IsNullOrEmpty(Name);
+    public bool IsAnonymous => string.IsNullOrEmpty(Name.Text);
 
-    public FunctionDeclarationNode(SourceLocation location, SyntaxNode parent, string name, string returnType) 
+    public FunctionDeclarationNode(SourceLocation location, SyntaxNode parent, SyntaxToken name, SyntaxToken? returnType) 
         : base(location, parent)
     {
         Name = name;

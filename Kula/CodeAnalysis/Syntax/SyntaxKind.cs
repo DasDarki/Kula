@@ -5,8 +5,10 @@ namespace Kula.CodeAnalysis.Syntax;
 /// <summary>
 /// The kind of the syntax token.
 /// </summary>
-internal enum SyntaxTokenKind
+public enum SyntaxKind
 {
+    // --- Lexer --- \\
+    
     /// <summary>
     /// The token is used for any not recognized token.
     /// </summary>
@@ -68,4 +70,16 @@ internal enum SyntaxTokenKind
     
     [TokenSpecification(typeof(IdentifierTokenSpecifier))]
     IdentifierToken,
+    
+    
+    
+    // --- Parser --- \\
+    
+    // Statements
+    ScriptStatement,
+    CallStatement,
+    
+    // Declarations
+    FunctionDeclaration,
+    ParameterDeclaration,
 }

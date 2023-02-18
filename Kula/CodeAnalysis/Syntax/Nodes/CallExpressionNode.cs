@@ -7,7 +7,7 @@ namespace Kula.CodeAnalysis.Syntax.Nodes;
 /// </summary>
 public class CallExpressionNode : StatementNode
 {
-    public override SyntaxNodeKind Kind => SyntaxNodeKind.CallStatement;
+    public override SyntaxKind Kind => SyntaxKind.CallStatement;
     
     public CallExpressionNode(SourceLocation location, SyntaxNode parent) 
         : base(location, parent)

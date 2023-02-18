@@ -51,7 +51,7 @@ public sealed class Parser
         {
             var token = context.Read();
             
-            if (token.Kind == SyntaxTokenKind.BadToken)
+            if (token.Kind == SyntaxKind.BadToken)
             {
                 Diagnostics.ReportError(token.Location, $"Unexpected token '{token.Text}'.");
 
@@ -63,14 +63,14 @@ public sealed class Parser
                 continue;
             }
             
-            if (token.Kind == SyntaxTokenKind.EndOfFileToken)
+            if (token.Kind == SyntaxKind.EndOfFileToken)
             {
                 break;
             }
 
             switch (token.Kind)
             {
-                case SyntaxTokenKind.FunctionToken:
+                case SyntaxKind.FunctionToken:
                     ParseFunction(script, context);
                     break;
             }

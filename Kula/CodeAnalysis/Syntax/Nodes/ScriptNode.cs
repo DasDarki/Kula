@@ -7,7 +7,7 @@ namespace Kula.CodeAnalysis.Syntax.Nodes;
 /// </summary>
 public sealed class ScriptNode : StatementNode 
 {
-    public override SyntaxNodeKind Kind => SyntaxNodeKind.Script;
+    public override SyntaxKind Kind => SyntaxKind.ScriptStatement;
 
     /// <summary>
     /// The children of the script node.
