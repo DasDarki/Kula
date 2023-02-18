@@ -15,12 +15,17 @@ public sealed class SourceLocation
     /// <summary>
     /// The source span declaring the column of the location.
     /// </summary>
-    public SourceSpan Column { get; }
+    public SourceSpan Column { get; private set; }
     
     /// <summary>
     /// The file name from which the tokens location is. If the token is not from a file, this is null.
     /// </summary>
     public string? File { get; }
+    
+    /// <summary>
+    /// Overrides the addition operator to add two source locations.
+    /// </summary>
+    public static SourceLocation operator +(SourceLocation left, SourceLocation right) => left.Add(right);
     
     internal SourceLocation(int line, SourceSpan column, string? file = null)
     {
@@ -48,5 +53,17 @@ public sealed class SourceLocation
         builder.Append(')');
         
         return builder.ToString();
+    }
+
+    public SourceLocation Add(SourceLocation other)
+    {
+        if (other.File != File)
+            throw new ArgumentException("Cannot add two locations from different files.", nameof(other));
+
+        if (other.Line != Line)
+            throw new ArgumentException("Cannot add two locations from different lines.", nameof(other));
+        
+        Column += other.Column;
+        return this;
     }
 }

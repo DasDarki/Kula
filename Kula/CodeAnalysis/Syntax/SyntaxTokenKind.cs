@@ -5,7 +5,7 @@ namespace Kula.CodeAnalysis.Syntax;
 /// <summary>
 /// The kind of the syntax token.
 /// </summary>
-public enum SyntaxTokenKind
+internal enum SyntaxTokenKind
 {
     /// <summary>
     /// The token is used for any not recognized token.

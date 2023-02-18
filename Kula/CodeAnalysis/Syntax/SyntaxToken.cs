@@ -6,7 +6,7 @@ namespace Kula.CodeAnalysis.Syntax;
 /// <summary>
 /// The syntax token is a token in the syntax tree.
 /// </summary>
-public sealed class SyntaxToken
+internal sealed class SyntaxToken
 {
     /// <summary>
     /// The location of the token in the original source code.

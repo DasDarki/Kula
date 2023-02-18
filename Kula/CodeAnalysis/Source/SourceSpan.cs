@@ -23,5 +23,7 @@ public readonly struct SourceSpan
     
     public bool Overlaps(SourceSpan other) => Start <= other.End && End >= other.Start;
     
+    public static SourceSpan operator +(SourceSpan left, SourceSpan right) => FromBounds(left.Start, right.End);
+    
     internal static SourceSpan FromBounds(int start, int end) => new(start, end - start);
 }

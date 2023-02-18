@@ -7,7 +7,7 @@ namespace Kula.CodeAnalysis.Syntax;
 /// <summary>
 /// The lexer is used to split the source code into tokens.
 /// </summary>
-public sealed class Lexer
+internal sealed class Lexer
 {
     private readonly Dictionary<SyntaxTokenKind, TokenSpecification> _tokenSpecifications = new();
     private readonly LexerContext _context;
