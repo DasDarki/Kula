@@ -12,6 +12,11 @@ public sealed class DiagnosticSink
     /// </summary>
     public IReadOnlyList<Diagnostic> Diagnostics => _diagnostics.AsReadOnly();
     
+    /// <summary>
+    /// The amount of errors that were collected.
+    /// </summary>
+    public int ErrorCount => _diagnostics.Count(d => d.Severity == DiagnosticSeverity.Error);
+    
     private readonly List<Diagnostic> _diagnostics = new();
 
     /// <summary>

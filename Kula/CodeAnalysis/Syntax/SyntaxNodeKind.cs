@@ -5,5 +5,11 @@
 /// </summary>
 public enum SyntaxNodeKind
 {
+    // Statements
     Script,
+    CallStatement,
+    
+    // Declarations
+    FunctionDeclaration,
+    Parameter,
 }

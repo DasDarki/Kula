@@ -16,6 +16,19 @@ public sealed class Parser
     /// The diagnostics the parser has encountered.
     /// </summary>
     public DiagnosticSink Diagnostics { get; } = new();
+    
+    /// <summary>
+    /// The parsing policy of this parser.
+    /// </summary>
+    public ParsingPolicy Policy { get; set; }
+
+    /// <summary>
+    /// Constructs a new parser.
+    /// </summary>
+    public Parser(ParsingPolicy policy = ParsingPolicy.SkipErroredAST)
+    {
+        Policy = policy;
+    }
 
     /// <summary>
     /// Parses the given file and adds the parsed script to the <see cref="ParsedScripts"/> list.
@@ -29,21 +42,48 @@ public sealed class Parser
     public void Parse(string text, string? file = null)
     {
         var script = new ScriptNode(file);
+        var currentErrorCount = Diagnostics.ErrorCount;
         
         var lexer = new Lexer(text, file);
-        var tokens = lexer.Tokenize();
+        var context = new ParserContext(lexer);
 
-        foreach (var token in tokens.TakeWhile(token => token.Kind != SyntaxTokenKind.EndOfFileToken))
+        while (context.HasNext)
         {
+            var token = context.Read();
+            
             if (token.Kind == SyntaxTokenKind.BadToken)
             {
                 Diagnostics.ReportError(token.Location, $"Unexpected token '{token.Text}'.");
+
+                if (Policy == ParsingPolicy.CancelParsingOnFirstError)
+                {
+                    return;
+                }
+                
                 continue;
             }
             
-            
+            if (token.Kind == SyntaxTokenKind.EndOfFileToken)
+            {
+                break;
+            }
+
+            switch (token.Kind)
+            {
+                case SyntaxTokenKind.FunctionToken:
+                    ParseFunction(script, context);
+                    break;
+            }
         }
         
-        ParsedScripts.Add(script);
+        if (Policy == ParsingPolicy.IgnoreErrors || (Policy == ParsingPolicy.SkipErroredAST && Diagnostics.ErrorCount == currentErrorCount))
+        {
+            ParsedScripts.Add(script);
+        }
+    }
+
+    private void ParseFunction(ScriptNode script, ParserContext context)
+    {
+        
     }
 }

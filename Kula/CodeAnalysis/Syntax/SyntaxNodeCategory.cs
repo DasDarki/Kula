@@ -7,5 +7,6 @@ public enum SyntaxNodeCategory
 {
     Expression,
     Statement,
-    Declaration
+    Declaration,
+    Token
 }
