@@ -9,7 +9,7 @@ public abstract class StatementNode : SyntaxNode
 {
     public override SyntaxNodeCategory Category => SyntaxNodeCategory.Statement;
 
-    protected StatementNode(SourceLocation location, SyntaxNode? parent = null) : base(location, parent)
+    protected StatementNode(SourceLocation location) : base(location)
     {
     }
 }

@@ -5,3 +5,5 @@ var testFile = Path.Join(Environment.CurrentDirectory, "..", "..", "..", "test.k
 var parser = new Parser();
 parser.ParseFile(testFile);
 
+Console.Read();
+

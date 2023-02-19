@@ -10,11 +10,6 @@ namespace Kula.CodeAnalysis.Syntax;
 public abstract class SyntaxNode : IEnumerable<SyntaxNode>
 {
     /// <summary>
-    /// The parent of this syntax node. If this is null, then this is the root node.
-    /// </summary>
-    public SyntaxNode? Parent { get; internal set; }
-    
-    /// <summary>
     /// The location of the syntax node in the source code.
     /// </summary>
     public SourceLocation Location { get; }
@@ -29,9 +24,8 @@ public abstract class SyntaxNode : IEnumerable<SyntaxNode>
     /// </summary>
     public abstract SyntaxKind Kind { get; }
 
-    protected SyntaxNode(SourceLocation location, SyntaxNode? parent = null)
+    protected SyntaxNode(SourceLocation location)
     {
-        Parent = parent;
         Location = location;
     }
 

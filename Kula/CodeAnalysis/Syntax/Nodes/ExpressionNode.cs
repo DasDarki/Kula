@@ -9,7 +9,7 @@ public abstract class ExpressionNode : SyntaxNode
 {
     public override SyntaxNodeCategory Category => SyntaxNodeCategory.Expression;
 
-    protected ExpressionNode(SourceLocation location, SyntaxNode? parent = null) : base(location, parent)
+    protected ExpressionNode(SourceLocation location) : base(location)
     {
     }
 }

@@ -5,6 +5,7 @@
 /// </summary>
 internal sealed class ParserContext
 {
+    private readonly DiagnosticSink _diagnostics;
     private readonly List<SyntaxToken> _tokens;
     private int _position;
 
@@ -12,11 +13,12 @@ internal sealed class ParserContext
     
     internal SyntaxToken Next => Peek(1);
     
-    internal bool HasNext => _position < _tokens.Count;
+    internal bool HasNext => _position < _tokens.Count || Next.Kind != SyntaxKind.EndOfFileToken;
 
-    internal ParserContext(Lexer lexer)
+    internal ParserContext(Lexer lexer, DiagnosticSink diagnostics)
     {
         _tokens = lexer.Tokenize();
+        _diagnostics = diagnostics;
     }
 
     internal SyntaxToken Peek(int offset = 0)
@@ -36,5 +38,16 @@ internal sealed class ParserContext
         var token = Current;
         NextToken();
         return token;
+    }
+    
+    internal SyntaxToken Match(SyntaxKind kind, string? hint = null)
+    {
+        if (Current.Kind == kind)
+        {
+            return Read();
+        }
+
+        _diagnostics.ReportError(Current.Location, $"Unexpected token '{Current.Text}'. Expected '{Enum.GetName(kind)}'.", hint);
+        return new SyntaxToken(Current.Location, kind, string.Empty);
     }
 }

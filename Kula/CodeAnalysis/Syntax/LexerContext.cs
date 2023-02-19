@@ -90,4 +90,12 @@ internal sealed class LexerContext
         NextToken(skipWhitespace);
         return current;
     }
+
+    public string Read(int length)
+    {
+        var text = Text.Substring(Position, length);
+        Position += length;
+        SourcePosition += length;
+        return text;
+    }
 }

@@ -26,6 +26,9 @@ public enum SyntaxKind
     [TokenSpecification(typeof(StringTokenSpecifier))]
     StringToken,
     
+    [TokenSpecification(typeof(BooleanTokenSpecifier))]
+    BooleanToken,
+    
     // Keywords
     
     [TokenSpecification(typeof(PatternTokenSpecifier), "function")]
@@ -54,8 +57,14 @@ public enum SyntaxKind
     [TokenSpecification(typeof(CharTokenSpecifier), '^')]
     CaretToken,
     
+    [TokenSpecification(typeof(PatternTokenSpecifier), "...")]
+    ThreeDotsToken,
+    
     [TokenSpecification(typeof(CharTokenSpecifier), '.')]
     DotToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), ',')]
+    CommaToken,
     
     [TokenSpecification(typeof(CharTokenSpecifier), '(')]
     OpenParenthesisToken,
@@ -65,6 +74,9 @@ public enum SyntaxKind
     
     [TokenSpecification(typeof(CharTokenSpecifier), ':')]
     ColonToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '=')]
+    EqualsToken,
     
     // Identifiers
     
@@ -77,9 +89,14 @@ public enum SyntaxKind
     
     // Statements
     ScriptStatement,
-    CallStatement,
+    BlockStatement,
+    ExpressionStatement,
     
     // Declarations
     FunctionDeclaration,
     ParameterDeclaration,
+    
+    // Expressions
+    ValueExpression,
+    CallExpression,
 }
