@@ -244,6 +244,58 @@ declare class Vector3
 end
 ```
 
+## Special thing: Annotations
+Annotations have the cool functionality to generate code at compile time. This is useful for things like generating a `__tostring` metamethod for a class, or generating a `__call` metamethod for a function.
+### Defining an annotation
+```
+annotation ToString
+    function generateCode(target: Class): void
+        // NEED TO FIGURE OUT HOW TO DO THIS
+    end
+end
+```
+
+### Using an annotation
+```
+@ToString
+class Person
+    local name: string
+    local age: number
+    
+    publicAccess: boolean = true
+
+    function Person(name: string, age: number)
+        self.name = name
+        self.age = age
+    end
+
+    function getName(): string
+        return self.name
+    end
+
+    function getAge(): number
+        return self.age
+    end
+end
+```
+### And annotations can have parameters
+```
+annotation MultipliedVersion
+   function generateCode(property: Property, factor: number): void
+        // NEED TO FIGURE OUT HOW TO DO THIS
+    end
+end
+
+class Vector3
+    @MultipliedVersion(2)
+    x: number
+    @MultipliedVersion(3)
+    y: number
+    @MultipliedVersion(4)
+    z: number
+end
+```
+
 ## one last thing: override operators
 ```
 class Vector3
