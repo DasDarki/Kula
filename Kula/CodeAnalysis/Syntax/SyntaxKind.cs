@@ -29,13 +29,108 @@ public enum SyntaxKind
     [TokenSpecification(typeof(BooleanTokenSpecifier))]
     BooleanToken,
     
-    // Keywords
+    // Keywords - FROM LUA
     
     [TokenSpecification(typeof(PatternTokenSpecifier), "function")]
     FunctionToken,
     
     [TokenSpecification(typeof(PatternTokenSpecifier), "end")]
     EndToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "local")]
+    LocalToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "if")]
+    IfToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "then")]
+    ThenToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "else")]
+    ElseToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "elseif")]
+    ElseIfToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "while")]
+    WhileToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "do")]
+    DoToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "repeat")]
+    RepeatToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "until")]
+    UntilToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "for")]
+    ForToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "in")]
+    InToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "return")]
+    ReturnToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "break")]
+    BreakToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "nil")]
+    NilToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "and")]
+    AndToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "or")]
+    OrToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "not")]
+    NotToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "self")]
+    SelfToken,
+
+    // Keywords - FROM KULA
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "class")]
+    ClassToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "extends")]
+    ExtendsToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "parent")]
+    ParentToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "interface")]
+    InterfaceToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "implements")]
+    ImplementsToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "override")]
+    OverrideToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "abstract")]
+    AbstractToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "readonly")]
+    ReadonlyToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "enum")]
+    EnumToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "annotation")]
+    AnnotationToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "is")]
+    IsToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "as")]
+    AsToken,
+    
+    [TokenSpecification(typeof(PatternTokenSpecifier), "instanceof")]
+    InstanceofToken,
     
     // Misc
 
@@ -78,6 +173,33 @@ public enum SyntaxKind
     [TokenSpecification(typeof(CharTokenSpecifier), '=')]
     EqualsToken,
     
+    [TokenSpecification(typeof(CharTokenSpecifier), '<')]
+    LessThanToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '>')]
+    GreaterThanToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '!')]
+    ExclamationMarkToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '?')]
+    QuestionMarkToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '~')]
+    TildeToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '{')]
+    OpenBraceToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '}')]
+    CloseBraceToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), '[')]
+    OpenBracketToken,
+    
+    [TokenSpecification(typeof(CharTokenSpecifier), ']')]
+    CloseBracketToken,
+    
     // Identifiers
     
     [TokenSpecification(typeof(IdentifierTokenSpecifier))]
@@ -86,15 +208,17 @@ public enum SyntaxKind
     
     
     // --- Parser --- \\
+    // Misc
+    Script,
+    Parameter,
     
     // Statements
-    ScriptStatement,
     BlockStatement,
     ExpressionStatement,
     
     // Declarations
     FunctionDeclaration,
-    ParameterDeclaration,
+    GlobalStatementDeclaration,
     
     // Expressions
     ValueExpression,

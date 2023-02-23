@@ -13,7 +13,7 @@ internal sealed class ParserContext
     
     internal SyntaxToken Next => Peek(1);
     
-    internal bool HasNext => _position < _tokens.Count || Next.Kind != SyntaxKind.EndOfFileToken;
+    internal bool HasNext => Current.Kind != SyntaxKind.EndOfFileToken;
 
     internal ParserContext(Lexer lexer, DiagnosticSink diagnostics)
     {

@@ -5,9 +5,11 @@ namespace Kula.CodeAnalysis.Syntax.Nodes;
 /// <summary>
 /// The parameter node represents a parameter.
 /// </summary>
-public class ParameterNode : DeclarationNode
+public class ParameterNode : SyntaxNode
 {
-    public override SyntaxKind Kind => SyntaxKind.ParameterDeclaration;
+    public override SyntaxNodeCategory Category => SyntaxNodeCategory.Misc;
+    
+    public override SyntaxKind Kind => SyntaxKind.Parameter;
     
     /// <summary>
     /// The name of the parameter. If the parameter is a vararg, the name is "...".

@@ -5,6 +5,7 @@
 /// </summary>
 public enum SyntaxNodeCategory
 {
+    Misc,
     Expression,
     Statement,
     Declaration,

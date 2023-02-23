@@ -42,48 +42,18 @@ public sealed class Parser
     /// </summary>
     public void Parse(string text, string? file = null)
     {
-        var script = new ScriptNode(file);
         var currentErrorCount = Diagnostics.ErrorCount;
         
         var lexer = new Lexer(text, file);
         var context = new ParserContext(lexer, Diagnostics);
 
-        while (context.HasNext)
+        var members = ParseMembers(context, currentErrorCount);
+        if (members == null)
         {
-            var token = context.Current;
-            
-            if (token.Kind == SyntaxKind.BadToken)
-            {
-                Diagnostics.ReportError(token.Location, $"Unexpected token '{token.Text}'.");
-
-                if (Policy == ParsingPolicy.CancelParsingOnFirstError)
-                {
-                    return;
-                }
-                
-                continue;
-            }
-            
-            if (token.Kind == SyntaxKind.EndOfFileToken)
-            {
-                break;
-            }
-
-            switch (token.Kind)
-            {
-                case SyntaxKind.FunctionToken:
-                    script.Children.Add(ParseFunction(context));
-                    break;
-                default:
-                    script.Children.Add(ParseStatement(context));
-                    break;
-            }
-            
-            if (Policy == ParsingPolicy.CancelParsingOnFirstError && Diagnostics.ErrorCount > currentErrorCount) // check for a second time in case the error count has changed
-            {
-                return;
-            }
+            return;
         }
+        
+        var script = new ScriptNode(file, members, context.Match(SyntaxKind.EndOfFileToken));
         
         if (Policy == ParsingPolicy.IgnoreErrors || (Policy == ParsingPolicy.SkipErroredAST && Diagnostics.ErrorCount == currentErrorCount))
         {
@@ -91,20 +61,42 @@ public sealed class Parser
         }
     }
 
-    private BlockStatementNode ParseBlock(ParserContext context)
+    private List<SyntaxNode>? ParseMembers(ParserContext context, int? currentErrorCount = null)
     {
-        var start = context.Current.Location;
-        var statements = new List<StatementNode>();
+        var members = new List<SyntaxNode>();
         
-        while (context.Current.Kind != SyntaxKind.EndToken && context.Current.Kind != SyntaxKind.EndOfFileToken)
+        while (context.HasNext)
         {
-            var statement = ParseStatement(context);
-            statements.Add(statement);
+            var startToken = context.Current;
+
+            var member = ParseMember(context);
+            members.Add(member);
+            
+            if (context.Current == startToken)
+                context.NextToken();
+
+            if (!currentErrorCount.HasValue) 
+                continue;
+            
+            if (Policy == ParsingPolicy.CancelParsingOnFirstError && Diagnostics.ErrorCount > currentErrorCount.Value) // check for a second time in case the error count has changed
+            {
+                return null;
+            }
         }
-        
-        context.Match(SyntaxKind.EndToken, "After the body of a function declaration, an 'end' keyword is expected, ending the function declaration.");
-        
-        return new BlockStatementNode(start, statements);
+
+        return members;
+    }
+
+    private DeclarationNode ParseMember(ParserContext context)
+    {
+        if (context.Current.Kind == SyntaxKind.FunctionToken ||( context.Current.Kind == SyntaxKind.LocalToken && context.Next.Kind == SyntaxKind.FunctionToken))
+            return ParseFunction(context);
+        return ParseGlobalStatement(context);
+    }
+
+    private DeclarationNode ParseGlobalStatement(ParserContext context)
+    {
+        return new GlobalStatementDeclarationNode(ParseStatement(context));
     }
 
     private StatementNode ParseStatement(ParserContext context)
@@ -114,12 +106,6 @@ public sealed class Parser
             default:
                 return ParseExpressionStatement(context);
         }
-    }
-    
-    private ExpressionStatementNode ParseExpressionStatement(ParserContext context)
-    {
-        var expression = ParseExpression(context);
-        return new ExpressionStatementNode(expression.Location, expression);
     }
 
     private ExpressionNode ParseExpression(ParserContext context)
@@ -131,6 +117,33 @@ public sealed class Parser
         }
         
         return ParseValue(context); // TODO
+    }
+
+    private BlockStatementNode ParseBlock(ParserContext context)
+    {
+        var start = context.Current.Location;
+        var statements = new List<StatementNode>();
+        
+        while (context.Current.Kind != SyntaxKind.EndToken && context.Current.Kind != SyntaxKind.EndOfFileToken)
+        {
+            var startToken = context.Current;
+            
+            var statement = ParseStatement(context);
+            statements.Add(statement);
+            
+            if (context.Current == startToken)
+                context.NextToken();
+        }
+        
+        context.Match(SyntaxKind.EndToken, "After a body block, an 'end' keyword is expected, ending the declaration of the block.");
+        
+        return new BlockStatementNode(start, statements);
+    }
+    
+    private ExpressionStatementNode ParseExpressionStatement(ParserContext context)
+    {
+        var expression = ParseExpression(context);
+        return new ExpressionStatementNode(expression.Location, expression);
     }
 
     private CallExpressionNode ParseCallExpression(ParserContext context)
@@ -189,8 +202,32 @@ public sealed class Parser
 
     private FunctionDeclarationNode ParseFunction(ParserContext context)
     {
+        SyntaxToken? local = null;
+        SyntaxToken? table = null;
+        SyntaxToken? name;
+        
+        if (context.Current.Kind == SyntaxKind.LocalToken)
+        {
+            local = context.Read();
+        }
+        
         context.Match(SyntaxKind.FunctionToken);
-        var name = context.Current.Kind == SyntaxKind.IdentifierToken ? context.Read() : new SyntaxToken(context.Current.Location, SyntaxKind.IdentifierToken, string.Empty);
+        
+        if (context.Current.Kind == SyntaxKind.IdentifierToken && context.Next.Kind == SyntaxKind.ColonToken && context.Peek(2).Kind == SyntaxKind.IdentifierToken)
+        {
+            table = context.Read();
+            context.Match(SyntaxKind.ColonToken);
+            name = context.Read();
+        }
+        else if (context.Current.Kind == SyntaxKind.IdentifierToken)
+        {
+            name = context.Read();
+        }
+        else
+        {
+            name = new SyntaxToken(context.Current.Location, SyntaxKind.IdentifierToken, string.Empty);
+        }
+        
         var openParen = context.Match(SyntaxKind.OpenParenthesisToken, "After the identifier of a function declaration, an opening parenthesis is expected, starting the parameter list. If the function has no parameters, an empty parameter list is expected. If the function should be anonymous, after the function keyword, an opening parenthesis is expected, starting the parameter list.");
         var parameters = ParseParameterList(context);
         var closeParen = context.Match(SyntaxKind.CloseParenthesisToken, "After the parameter list of a function declaration, a closing parenthesis is expected, ending the parameter list.");
@@ -201,7 +238,7 @@ public sealed class Parser
             new SourceLocation(name.Location.Line,
                 SourceSpan.FromBounds(name.Location.Column.Start,
                     returnType?.Location.Column.End ?? closeParen.Location.Column.End)),
-            name, returnType, openParen, closeParen, parameters, body);
+            local, table, name, returnType, openParen, closeParen, parameters, body);
     }
 
     private List<ParameterNode> ParseParameterList(ParserContext context)
